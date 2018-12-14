@@ -1,45 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-class Frankie extends StatelessWidget {
+class Frankie extends StatefulWidget {
 
+  Offset position;
+
+  @override
+  _FrankieState createState() => new _FrankieState();
+}
+
+class _FrankieState extends State<Frankie> {
+
+  static Image _frankie = new Image.asset(
+      "assets/images/frankie-top-view.png",
+      width: 400.0,
+      height: 100.0
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    widget.position = new Offset(0.0, 0.0);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      // move frankie to right
-      onVerticalDragStart: (dragStartDetails) {
-        Fluttertoast.showToast(
-            msg: dragStartDetails.toString(),
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIos: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white
-        );
-      },
-      //move frankie to left
-      onVerticalDragEnd: (dragEndDetails) {
-        Fluttertoast.showToast(
-            msg: dragEndDetails.toString(),
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIos: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white
-        );
-      },
-      //frankie image
-      child: new Column(
-          children: <Widget>[
-            new Image.asset(
-                "assets/images/car-top-view.png",
-                width: 400.0,
-                height: 100.0
+    return new Positioned(
+            bottom: widget.position.dy,
+            left: widget.position.dx,
+            child: new Draggable(
+                feedback: _frankie,
+                child: _frankie,
+                childWhenDragging: new Container(),
+                onDraggableCanceled: (velocity, offset) {
+                  print('_DragBoxState.build -> offset $offset');
+
+                  setState(() {
+                    widget.position = new Offset(offset.dx, 0.0);
+                  });
+                },
+                axis: Axis.horizontal
             )
-          ]
-      )
-    );
+        );
   }
 
 }
